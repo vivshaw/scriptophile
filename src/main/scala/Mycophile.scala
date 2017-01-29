@@ -10,7 +10,7 @@ import network.NeuralNetwork
 
 object Mycophile extends App {
 	println("Hello, Scala!")
-	var net = NeuralNetwork(List(20, 8, 1))
+	var net = NeuralNetwork(List(20, 8, 5))
 	val test_matrix = DenseMatrix.zeros[Double](20,1)
-	println(net.feedforward(test_matrix))
+	println(net.feedForward(test_matrix))
 }

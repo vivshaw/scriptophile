@@ -84,6 +84,11 @@ class NeuralNetwork(sizes: List[Int]) {
 	}
 
 	def evaluate (test_data: List[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) : Int = {
+		test_data foreach { case(features, result) =>
+			val test = argmax(feedForward(features))
+			val target = argmax(result)
+			println(test, target)
+		}
 		val correct = for (t <- test_data if argmax(feedForward(t._1)) == argmax(t._2)) yield 1
 		return correct.length
 	}

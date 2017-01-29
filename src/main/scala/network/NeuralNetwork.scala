@@ -18,7 +18,7 @@ class NeuralNetwork(sizes: List[Int]) {
 	def feedForward (activation: DenseMatrix[Double]) : DenseMatrix[Double] = {
 		var output = activation
 		biases.zip(weights).foreach{ case (bias, weight) => 
-			output = sigmoid((weight * result) + bias)
+			output = sigmoid((weight * output) + bias)
 		}
 		return output
 	}
@@ -41,8 +41,9 @@ class NeuralNetwork(sizes: List[Int]) {
 			nabla_bias = for (t <- nabla_bias zip delta_nabla_bias) yield t._1 + t._2
 			nabla_weight = for (t <- nabla_weight zip delta_nabla_weight) yield t._1 + t._2	
 		}
+		weights = for(t <- weights zip nabla_weight) yield t._1 - (t._2 * (eta / miniBatch.length))
+		biases = for(t <- biases zip nabla_bias) yield t._1 - (t._2 * (eta / miniBatch.length))
 	}
-}
 
 	def backprop (features: DenseMatrix[Double], result: Int) : (List[DenseMatrix[Double]], List[DenseMatrix[Double]]) = {
 		

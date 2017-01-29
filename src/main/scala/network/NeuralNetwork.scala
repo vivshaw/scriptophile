@@ -24,7 +24,7 @@ class NeuralNetwork(sizes: List[Int]) {
 		return output
 	}
 
-	def sgd (trainingData: List[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], epochs: Int, miniBatchSize: Int, eta: Double) {
+	def sgd (trainingData: List[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], epochs: Int, miniBatchSize: Int, eta: Double, testData: List[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) {
 		val n = trainingData.length
 
 		for (i <- 1 to epochs) {
@@ -35,6 +35,7 @@ class NeuralNetwork(sizes: List[Int]) {
 				updateMiniBatch(miniBatch, eta)
 			}
 
+			println(evaluate(testData) + "/" + testData.length + " correct")			
 			println("Epoch " + i + " complete.")
 		}
 	}

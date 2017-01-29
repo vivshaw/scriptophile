@@ -13,6 +13,7 @@ class NeuralNetwork(sizes: List[Int]) {
   val normal = breeze.stats.distributions.Gaussian(0, 1)
   var biases = for (y <- sizes.drop(1) ) yield DenseMatrix.rand(y, 1, normal)
   var weights = for (t <- sizes.dropRight(1) zip sizes.drop(1)) yield DenseMatrix.rand(t._2, t._1, normal)
+  var test: Double = 0
 
   def feedForward (a: DenseMatrix[Double]) : DenseMatrix[Double] = {
   	var result = a
@@ -27,7 +28,13 @@ class NeuralNetwork(sizes: List[Int]) {
   	for(i <- 1 to epochs) {
   		val data = shuffle(trainingData)
   		val miniBatches = for (k <- 0 to n by miniBatchSize) yield trainingData.slice(k, k + miniBatchSize)
+  		miniBatches.foreach{ miniBatch => updateMiniBatch(miniBatch, eta) }
   	}
+  }
+
+  def updateMiniBatch (miniBatch: List[Tuple2[DenseMatrix[Double], Int]], eta: Double) {
+  	test = eta
+  	return eta
   }
 }
 

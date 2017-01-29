@@ -6,6 +6,7 @@ package network
 
 import breeze.linalg._
 import breeze.numerics._
+import scala.util.Random.shuffle
 
 class NeuralNetwork(sizes: List[Int]) {
   val layers = sizes.length
@@ -19,6 +20,14 @@ class NeuralNetwork(sizes: List[Int]) {
   		result = sigmoid((weight * result) + bias)
   	}
   	return result
+  }
+
+  def sgd (trainingData: List[Tuple2[DenseMatrix[Double], Int]], epochs: Int, miniBatchSize: Int, eta: Double) {
+  	val n = trainingData.length
+  	for(i <- 1 to epochs) {
+  		val data = shuffle(trainingData)
+  		val miniBatches = for (k <- 0 to n by miniBatchSize) yield trainingData.slice(k, k + miniBatchSize)
+  	}
   }
 }
 

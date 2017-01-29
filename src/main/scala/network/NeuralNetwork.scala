@@ -1,7 +1,3 @@
-/**
-  * Created by vivshaw on 1/28/2017.
-  */
-
 package network
 
 import breeze.linalg._

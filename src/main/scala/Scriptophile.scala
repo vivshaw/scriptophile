@@ -1,7 +1,4 @@
-/**
-  * Created by vivshaw on 1/28/2017.
-  */
-package mycophile
+package scriptophile
 
 import breeze.linalg._
 import breeze.numerics._

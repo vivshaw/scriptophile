@@ -63,7 +63,7 @@ class NeuralNetwork(sizes: List[Int]) {
 		var zs: List[DenseMatrix[Double]] = List()
 
 		biases zip weights foreach { case (bias, weight) => 
-			val z = weight * activation
+			val z = (weight * activation) + bias
 			zs = zs :+ z
 			activation = sigmoid(z)
 			activations = activations :+ activation

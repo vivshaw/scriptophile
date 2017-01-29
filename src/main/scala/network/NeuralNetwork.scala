@@ -12,6 +12,14 @@ class NeuralNetwork(sizes: List[Int]) {
   val normal = breeze.stats.distributions.Gaussian(0, 1)
   var biases = for (y <- sizes.drop(1) ) yield DenseMatrix.rand(y, 1, normal)
   var weights = for (t <- sizes.dropRight(1) zip sizes.drop(1)) yield DenseMatrix.rand(t._2, t._1, normal)
+
+  def feedforward (a: DenseMatrix[Double]) : DenseMatrix[Double] = {
+  	biases.zip(weights).foreach{ case (bias, weight) => 
+  		println(bias)
+  		println(weight)
+  	}
+  	return a
+  }
 }
 
 object NeuralNetwork {

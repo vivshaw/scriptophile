@@ -46,7 +46,9 @@ class NeuralNetwork(sizes: List[Int]) {
 	}
 
 	def backprop (features: DenseMatrix[Double], result: Int) : (List[DenseMatrix[Double]], List[DenseMatrix[Double]]) = {
-		
+		var nabla_bias = for (bias <- biases) yield DenseMatrix.zeros[Double](bias.rows, bias.cols)
+		var nabla_weight = for (weight <- weights) yield DenseMatrix.zeros[Double](weight.rows, weight.cols)
+		return (nabla_bias, nabla_weight)
 	}
 }
 

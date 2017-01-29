@@ -27,14 +27,14 @@ class NeuralNetwork(sizes: List[Int]) {
   	val n = trainingData.length
   	for(i <- 1 to epochs) {
   		val data = shuffle(trainingData)
-  		val miniBatches = for (k <- 0 to n by miniBatchSize) yield trainingData.slice(k, k + miniBatchSize)
+  		val miniBatches = for (j <- 0 to n by miniBatchSize) yield trainingData.slice(j, j + miniBatchSize)
   		miniBatches.foreach{ miniBatch => updateMiniBatch(miniBatch, eta) }
+  		println("Epoch " + i + " complete.")
   	}
   }
 
   def updateMiniBatch (miniBatch: List[Tuple2[DenseMatrix[Double], Int]], eta: Double) {
   	test = eta
-  	return eta
   }
 }
 

@@ -14,4 +14,5 @@ object Mycophile extends App {
 	val test_matrix = DenseMatrix.zeros[Double](20,1)
 	val data = List((test_matrix, 1))
 	println(net.sgd(data, 10, 1, 0.5))
+	println(net.test)
 }

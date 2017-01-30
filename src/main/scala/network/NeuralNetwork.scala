@@ -49,7 +49,7 @@ class NeuralNetwork(sizes: List[Int]) {
 		biases = for (t <- biases zip nabla_bias) yield t._1 - (t._2 * (eta / miniBatch.length))
 	}
 
-	def backprop (features: DenseMatrix[Double], result: DenseMatrix[Double]) : (List[DenseMatrix[Double]], List[DenseMatrix[Double]]) = {
+	def backprop (features: DenseMatrix[Double], result: DenseMatrix[Double]) : (Seq[DenseMatrix[Double]], Seq[DenseMatrix[Double]]) = {
 		var nabla_bias = for (bias <- biases) yield DenseMatrix.zeros[Double](bias.rows, bias.cols)
 		var nabla_weight = for (weight <- weights) yield DenseMatrix.zeros[Double](weight.rows, weight.cols)
 		

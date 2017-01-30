@@ -13,23 +13,21 @@ object Scriptophile extends App {
         */
     	val vect = DenseVector.zeros[Double](10)
     	vect(digit) = 1.0
-    	var digitMatrix = new DenseMatrix(10, 1, vect.toArray)
-    	return digitMatrix
+    	return new DenseMatrix(10, 1, vect.toArray)
     }
 
     def imageToArray (image: Array[Double]) : DenseMatrix[Double] = {
         /* Turns an array of doubles into a (784,1) matrix representing the 784 pixels of an image
         *  from the MNIST data.
         */
-    	val out = new DenseMatrix(784, 1, image)
-    	return out
+    	return new DenseMatrix(784, 1, image)
     }
 
 	case class mnistDatum(line: String) {
         /* Case class used to process the raw CSV data into an Array[Double] containing the image,
-        *  and an Int label. Also performs feature rescaling on the pixels to [0, 1].
+        *  and an Int label. Also performs feature rescaling on the image's pixel values to [0, 1].
         */
-		val raw = line.split(",").map(_.trim)
+		val raw = line split(",") map(_.trim)
         val label = labelToArray(raw.head.toInt)
         val image = imageToArray(raw.tail map(item => item.toDouble / 255.0))
 	}

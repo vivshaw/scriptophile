@@ -33,7 +33,7 @@ class NeuralNetwork(sizes: Seq[Int]) {
 
 	def sgd (trainingData: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], epochs: Int, miniBatchSize: Int, eta: Double, testData: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) {
 		/* Perform mini batch stochastic gradient descent to train the network, outputting the test accuracy at each epoch. The training
-		*  and test data are both Seq[Tuple2[]] of DenseMatrix[Doubles], where each tuple is an input / target output pair, and the rest
+		*  and test data are both Seq[Tuple2[]] of DenseMatrix[Doubles], where each tuple is an input / label pair, and the rest
 		*  of the arguments do what they say on the tin.
 		*/
 		val n = trainingData.length
@@ -52,7 +52,7 @@ class NeuralNetwork(sizes: Seq[Int]) {
 
 	def updateMiniBatch (miniBatch: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], eta: Double) {
 		/* Updates weights and biases via backpropagation over one minibatch. miniBatch is a Seq[Tuple2[]]
-		*  of DenseMatrix[Double]s where each Tuple2 is an input / target output pair, and eta
+		*  of DenseMatrix[Double]s where each Tuple2 is an input / label pair, and eta
 		*  is the learning rate.
 		*/
 		var nabla_bias = for (bias <- biases) yield DenseMatrix.zeros[Double](bias.rows, bias.cols)

@@ -8,9 +8,9 @@ The project was inspired by [Michael Nielsen](http://michaelnielsen.org/)'s exce
 
 ## How To Use It
 ```
-git clone https://github.com/vivshaw/scriptophile.git
-cd scriptophile
-sbt run
+$git clone https://github.com/vivshaw/scriptophile.git
+$cd scriptophile
+$sbt run
 ```
 
 ## Typical Results
@@ -29,3 +29,8 @@ Epoch 29 complete, with 9388 / 10000 correct
 Epoch 30 complete, with 9402 / 10000 correct
 final accuracy: 0.9402%
 ```
+
+## To-dos
+
+* Rewrite in more idiomatic Scala
+* Hunt for suspected implementation error causing poor recognition accuracy with large hidden layers

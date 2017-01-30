@@ -103,14 +103,13 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		return (nabla_bias, nabla_weight)
 	}
 
-	def evaluate (test_data: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) : Int = {
-		/* Returns the number of inputs from test_data for which the network's response is correct.
-		*  The output is calculated as the index of the output neuron with the maximum activation.
-		*/
-		val correct = for ((input, label) <- test_data if argmax(feedForward(input)) == argmax(label)) yield 1
-		return correct.length
-	}
 
+	/* Returns the number of inputs from test_data for which the network's response is correct.
+	*  The output is calculated as the index of the output neuron with the maximum activation.
+	*/
+	def evaluate (test_data: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) = (for ((input, label) <- test_data if argmax(feedForward(input)) == argmax(label)) yield 1).length
+
+	// Derivative of sigmoid
 	def sigmoid_prime (z: DenseMatrix[Double]) = sigmoid(z) :* (-sigmoid(z) + 1.0)
 }
 

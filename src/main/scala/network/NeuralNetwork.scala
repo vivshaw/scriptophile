@@ -14,6 +14,7 @@ class NeuralNetwork(sizes: Seq[Int]) {
 	/* sizes contains the size of each layer of neurons in the network. So, if sizes were Seq(4, 3, 3, 2), the network would
 	*  be a 4-layer network with 4 input neurons, two hidden layers of 3 neurons each, and an output layer with 2 neurons.
 	*/
+	type Datum = Tuple2[DenseMatrix[Double], DenseMatrix[Double]]
 	val layers = sizes.length
 	val normal = breeze.stats.distributions.Gaussian(0, 1)
 	var biases = for (y <- sizes.drop(1)) yield DenseMatrix.rand(y, 1, normal)
@@ -31,7 +32,7 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		return output
 	}
 
-	def sgd (trainingData: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], epochs: Int, miniBatchSize: Int, eta: Double, testData: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) {
+	def sgd (trainingData: Seq[Datum], epochs: Int, miniBatchSize: Int, eta: Double, testData: Seq[Datum]) {
 		/* Perform mini batch stochastic gradient descent to train the network, outputting the test accuracy at each epoch. The training
 		*  and test data are both Seq[Tuple2[]] of DenseMatrix[Doubles], where each tuple is an input / label pair, and the rest
 		*  of the arguments do what they say on the tin.
@@ -50,7 +51,7 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		}
 	}
 
-	def updateMiniBatch (miniBatch: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], eta: Double) {
+	def updateMiniBatch (miniBatch: Seq[Datum], eta: Double) {
 		/* Updates weights and biases via backpropagation over one minibatch. miniBatch is a Seq[Tuple2[]]
 		*  of DenseMatrix[Double]s where each Tuple2 is an input / label pair, and eta
 		*  is the learning rate.
@@ -103,13 +104,12 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		return (nabla_bias, nabla_weight)
 	}
 
-
 	/* Returns the number of inputs from test_data for which the network's response is correct.
 	*  The output is calculated as the index of the output neuron with the maximum activation.
 	*/
-	def evaluate (test_data: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) = (for ((input, label) <- test_data if argmax(feedForward(input)) == argmax(label)) yield 1).length
+	def evaluate (test_data: Seq[Datum]) = (for ((input, label) <- test_data if argmax(feedForward(input)) == argmax(label)) yield 1).length
 
-	// Derivative of sigmoid
+	// Derivative of sigmoid function
 	def sigmoid_prime (z: DenseMatrix[Double]) = sigmoid(z) :* (-sigmoid(z) + 1.0)
 }
 

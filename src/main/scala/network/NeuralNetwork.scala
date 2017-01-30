@@ -17,7 +17,7 @@ class NeuralNetwork(sizes: Seq[Int]) {
 	val layers = sizes.length
 	val normal = breeze.stats.distributions.Gaussian(0, 1)
 	var biases = for (y <- sizes.drop(1)) yield DenseMatrix.rand(y, 1, normal)
-	var weights = for (t <- sizes.dropRight(1) zip sizes.drop(1)) yield DenseMatrix.rand(t._2, t._1, normal)
+	var weights = for ((x, y) <- sizes.dropRight(1) zip sizes.drop(1)) yield DenseMatrix.rand(y, x, normal)
 
 	def feedForward (activation: DenseMatrix[Double]) : DenseMatrix[Double] = {
 		/* Plug an activation into the network and return the output
@@ -60,12 +60,12 @@ class NeuralNetwork(sizes: Seq[Int]) {
 
 		miniBatch foreach { case (features, result) =>
 			val (delta_nabla_bias, delta_nabla_weight) = backprop(features, result)
-			nabla_bias = for (t <- nabla_bias zip delta_nabla_bias) yield t._1 + t._2
-			nabla_weight = for (t <- nabla_weight zip delta_nabla_weight) yield t._1 + t._2	
+			nabla_bias = for ((nabla, delta) <- nabla_bias zip delta_nabla_bias) yield nabla + delta
+			nabla_weight = for ((nabla, delta) <- nabla_weight zip delta_nabla_weight) yield nabla + delta
 		}
 
-		weights = for (t <- weights zip nabla_weight) yield t._1 - (t._2 * (eta / miniBatch.length))
-		biases = for (t <- biases zip nabla_bias) yield t._1 - (t._2 * (eta / miniBatch.length))
+		weights = for ((weight, nabla) <- weights zip nabla_weight) yield weight - (nabla * (eta / miniBatch.length))
+		biases = for ((bias, nabla) <- biases zip nabla_bias) yield bias - (nabla * (eta / miniBatch.length))
 	}
 
 	def backprop (features: DenseMatrix[Double], result: DenseMatrix[Double]) : (Seq[DenseMatrix[Double]], Seq[DenseMatrix[Double]]) = {
@@ -92,7 +92,7 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		nabla_bias = nabla_bias.updated(nabla_bias.length - 1, delta)
 		nabla_weight = nabla_weight.updated(nabla_weight.length - 1, delta * activations.takeRight(2).head.t)
 
-		for (i <- 2 to layers - 1) {
+		for (i <- 2 until layers) {
 			val z = zs.takeRight(i).head
 			val sp = sigmoid_prime(z)
 			delta = (weights.takeRight(i - 1).head.t * delta) :* sp
@@ -107,7 +107,7 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		/* Returns the number of inputs from test_data for which the network's response is correct.
 		*  The output is calculated as the index of the output neuron with the maximum activation.
 		*/
-		val correct = for (t <- test_data if argmax(feedForward(t._1)) == argmax(t._2)) yield 1
+		val correct = for ((input, label) <- test_data if argmax(feedForward(input)) == argmax(label)) yield 1
 		return correct.length
 	}
 

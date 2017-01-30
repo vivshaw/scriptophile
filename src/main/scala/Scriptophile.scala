@@ -16,12 +16,8 @@ object Scriptophile extends App {
     	return new DenseMatrix(10, 1, vect.toArray)
     }
 
-    def imageToArray (image: Array[Double]) : DenseMatrix[Double] = {
-        /* Turns an array of doubles into a (784,1) matrix representing the 784 pixels of an image
-        *  from the MNIST data.
-        */
-    	return new DenseMatrix(784, 1, image)
-    }
+    // Turns an array of doubles into a (784,1) matrix representing the 784 pixels of an image from the MNIST data.
+    def imageToArray (image: Array[Double]) = new DenseMatrix(784, 1, image)
 
 	case class mnistDatum(line: String) {
         /* Case class used to process the raw CSV data into an Array[Double] containing the image,
@@ -53,5 +49,5 @@ object Scriptophile extends App {
     // Train for 30 epochs, with mini-batch size 10, and learning rate 3.0
 	net.sgd(mnist_train, 30, 10, 3.0, mnist_test)
 
-	println(s"final accuracy: ${ net.evaluate(mnist_test).toDouble / mnist_test.length.toDouble }%")
+	println(s"final accuracy: ${ 100.0 * net.evaluate(mnist_test).toDouble / mnist_test.length.toDouble }%")
 }

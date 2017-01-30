@@ -111,9 +111,7 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		return correct.length
 	}
 
-	def sigmoid_prime (z: DenseMatrix[Double]) : DenseMatrix[Double] = {
-		return sigmoid(z) :* (-sigmoid(z) + 1.0)
-	}
+	def sigmoid_prime (z: DenseMatrix[Double]) = sigmoid(z) :* (-sigmoid(z) + 1.0)
 }
 
 object NeuralNetwork {

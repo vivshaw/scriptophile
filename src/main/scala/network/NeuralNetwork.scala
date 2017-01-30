@@ -50,9 +50,12 @@ class NeuralNetwork(sizes: List[Int]) {
 	}
 
 	def backprop (features: DenseMatrix[Double], result: DenseMatrix[Double]) : (Seq[DenseMatrix[Double]], Seq[DenseMatrix[Double]]) = {
+		// Initialize nabla_bias, nabla_weight to zeros matrix with correct dimension
 		var nabla_bias = for (bias <- biases) yield DenseMatrix.zeros[Double](bias.rows, bias.cols)
 		var nabla_weight = for (weight <- weights) yield DenseMatrix.zeros[Double](weight.rows, weight.cols)
 		
+
+		// feedforward pass, storing z values
 		var activation = features
 		var activations = List(features)
 		var zs: List[DenseMatrix[Double]] = List()
@@ -64,6 +67,7 @@ class NeuralNetwork(sizes: List[Int]) {
 			activations = activations :+ activation
 		}
 
+		// backward pass
 		var delta = (activations.reverse.head - result) :* sigmoid_prime(zs.reverse.head)
 		nabla_bias = nabla_bias.updated(nabla_bias.length - 1, delta)
 		nabla_weight = nabla_weight.updated(nabla_weight.length - 1, delta * activations.takeRight(2).head.t)
@@ -73,7 +77,7 @@ class NeuralNetwork(sizes: List[Int]) {
 			val sp = sigmoid_prime(z)
 			delta = (weights.takeRight(i - 1).head.t * delta) :* sp
 			nabla_bias = nabla_bias.updated(nabla_bias.length - 1 - i, delta)
-			nabla_weight = nabla_weight.updated(nabla_weight.length - 1 - i, delta * activations.takeRight(i + 1).head.t)
+			nabla_weight = nabla_weight.updated(nabla_weight.length - 1 - i, delta * activations(i + 1).t)
 		}
 
 		return (nabla_bias, nabla_weight)

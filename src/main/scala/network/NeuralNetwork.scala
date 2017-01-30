@@ -31,8 +31,7 @@ class NeuralNetwork(sizes: List[Int]) {
 				updateMiniBatch(miniBatch, eta)
 			}
 
-			println(evaluate(testData) + "/" + testData.length + " correct")			
-			println("Epoch " + i + " complete.")
+			println("Epoch " + i + " complete, with " + evaluate(testData) + "/" + testData.length + " correct")
 		}
 	}
 

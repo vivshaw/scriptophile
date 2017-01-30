@@ -4,7 +4,7 @@ import breeze.linalg._
 import breeze.numerics._
 import scala.util.Random.shuffle
 
-class NeuralNetwork(sizes: List[Int]) {
+class NeuralNetwork(sizes: Seq[Int]) {
 	val layers = sizes.length
 	val normal = breeze.stats.distributions.Gaussian(0, 1)
 	var biases = for (y <- sizes.drop(1)) yield DenseMatrix.rand(y, 1, normal)
@@ -31,7 +31,7 @@ class NeuralNetwork(sizes: List[Int]) {
 				updateMiniBatch(miniBatch, eta)
 			}
 
-			println("Epoch " + i + " complete, with " + evaluate(testData) + "/" + testData.length + " correct")
+			println(s"Epoch ${i} complete, with ${evaluate(testData)} / ${testData.length} correct")
 		}
 	}
 
@@ -62,8 +62,8 @@ class NeuralNetwork(sizes: List[Int]) {
 
 		biases zip weights foreach { case (bias, weight) => 
 			val z = (weight * activation) + bias
-			zs = zs :+ z
 			activation = sigmoid(z)
+			zs = zs :+ z
 			activations = activations :+ activation
 		}
 
@@ -76,10 +76,9 @@ class NeuralNetwork(sizes: List[Int]) {
 			val z = zs.takeRight(i).head
 			val sp = sigmoid_prime(z)
 			delta = (weights.takeRight(i - 1).head.t * delta) :* sp
-			nabla_bias = nabla_bias.updated(nabla_bias.length - 1 - i, delta)
-			nabla_weight = nabla_weight.updated(nabla_weight.length - 1 - i, delta * activations(i + 1).t)
+			nabla_bias = nabla_bias.updated(nabla_bias.length - i, delta)
+			nabla_weight = nabla_weight.updated(nabla_weight.length - i, delta * activations.takeRight(i + 1).head.t)
 		}
-
 		return (nabla_bias, nabla_weight)
 	}
 
@@ -89,10 +88,10 @@ class NeuralNetwork(sizes: List[Int]) {
 	}
 
 	def sigmoid_prime (z: DenseMatrix[Double]) : DenseMatrix[Double] = {
-		return sigmoid(z) :* (-sigmoid(z) + 1d)
+		return sigmoid(z) :* (-sigmoid(z) + 1.0)
 	}
 }
 
 object NeuralNetwork {
-	def apply(x: List[Int]) = new NeuralNetwork(x)
+	def apply(x: Seq[Int]) = new NeuralNetwork(x)
 }

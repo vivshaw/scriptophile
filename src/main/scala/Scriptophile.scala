@@ -35,5 +35,7 @@ object Scriptophile extends App {
     
 	println("now training")
 	val net = NeuralNetwork(List(784, 30, 10))
-	net.sgd(mnist_test.dropRight(1000), 30, 10, 3.0, mnist_test.takeRight(1000))
+	net.sgd(mnist_train, 30, 10, 3.0, mnist_test)
+
+	println(s"final accuracy: ${ net.evaluate(mnist_test).toDouble / mnist_test.length.toDouble }%")
 }

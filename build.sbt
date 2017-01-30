@@ -20,3 +20,5 @@ resolvers ++= Seq(
 
 // or 2.11.8
 scalaVersion := "2.10.4"
+
+scalacOptions += "-feature"

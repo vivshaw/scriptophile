@@ -1,32 +1,40 @@
 package scriptophile
 
+import scala.io.Source
+
 import breeze.linalg._
 import breeze.numerics._
 
 import network.NeuralNetwork
 
-object Mycophile extends App {
-	var net = NeuralNetwork(List(2, 3, 2))
-
-	val zero = new DenseMatrix(2,1,DenseVector(0.0, 1.0).toArray)
-	val one = new DenseMatrix(2,1,DenseVector(1.0, 0.0).toArray)
-	val both = new DenseMatrix(2,1,DenseVector(1.0, 1.0).toArray)
-	val neither = new DenseMatrix(2,1,DenseVector(0.0, 0.0).toArray)
-
-	val excl_or = List((zero, one), (one, one), (both, zero), (neither, zero))
-	val incl_or = List((zero, one), (one, one), (both, one), (neither, zero))
-	val train_data = excl_or
+object Scriptophile extends App {
+	val net = NeuralNetwork(List(784, 30, 10))
 	
-	val bufferedSource = io.Source.fromFile("src/main/resources/mnist_train.csv")
-    for (line <- bufferedSource.getLines) {
-        val cols = line.split(",").map(_.trim)
-        // do whatever you want with the columns here
-        println(s"${cols(0)}")
+    def digitToArray (digit: Int) : DenseMatrix[Double] = {
+    	val vect = DenseVector.zeros[Double](10)
+    	vect(digit) = 1.0
+    	var digitMatrix = new DenseMatrix(10, 1, vect.toArray)
+    	return digitMatrix
     }
-    bufferedSource.close
 
-	/*
+    def pixelToArray (pixel: Array[Double]) : DenseMatrix[Double] = {
+    	val out = new DenseMatrix(784, 1, pixel)
+    	return out
+    }
+
+	case class mnistDatum(line: String) {
+		val raw = line.split(",").map(_.trim)
+		val data = (pixelToArray(raw.tail map(item => item.toDouble)),
+					digitToArray(raw.head.toInt))
+	}
+
+    val mnistRaw = Source.fromFile("src/main/resources/mnist_train.csv") getLines() drop(1) map(line => mnistDatum(line))
+    val mnistData = mnistRaw map(datum => datum.data)
+    val mnist = mnistData.toSeq
+
+    val mnist_train = mnist.dropRight(3000)
+    val mnist_test = mnist.takeRight(3000)
+    
 	println("now training")
-	net.sgd(train_data, 10000, 4, 0.5, train_data)
-	*/
+	net.sgd(mnist_train, 30, 10, 3.0, mnist_test)
 }

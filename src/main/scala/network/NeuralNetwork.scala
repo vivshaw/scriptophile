@@ -20,7 +20,7 @@ class NeuralNetwork(sizes: List[Int]) {
 		return output
 	}
 
-	def sgd (trainingData: List[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], epochs: Int, miniBatchSize: Int, eta: Double, testData: List[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) {
+	def sgd (trainingData: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], epochs: Int, miniBatchSize: Int, eta: Double, testData: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) {
 		val n = trainingData.length
 
 		for (i <- 1 to epochs) {
@@ -36,7 +36,7 @@ class NeuralNetwork(sizes: List[Int]) {
 		}
 	}
 
-	def updateMiniBatch (miniBatch: List[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], eta: Double) {
+	def updateMiniBatch (miniBatch: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]], eta: Double) {
 		var nabla_bias = for (bias <- biases) yield DenseMatrix.zeros[Double](bias.rows, bias.cols)
 		var nabla_weight = for (weight <- weights) yield DenseMatrix.zeros[Double](weight.rows, weight.cols)
 
@@ -80,7 +80,7 @@ class NeuralNetwork(sizes: List[Int]) {
 		return (nabla_bias, nabla_weight)
 	}
 
-	def evaluate (test_data: List[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) : Int = {
+	def evaluate (test_data: Seq[Tuple2[DenseMatrix[Double], DenseMatrix[Double]]]) : Int = {
 		val correct = for (t <- test_data if argmax(feedForward(t._1)) == argmax(t._2)) yield 1
 		return correct.length
 	}

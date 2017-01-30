@@ -20,14 +20,15 @@ I typically get recognition accuracy in the 94%-95% range. An average run looks 
 ```
 $sbt run
 now training
-Epoch 1 complete, with 7969 / 10000 correct
-Epoch 2 complete, with 8162 / 10000 correct
-Epoch 3 complete, with 8246 / 10000 correct
-Epoch 4 complete, with 9232 / 10000 correct
+Epoch 1 complete, with 8819 / 10000 correct
+Epoch 2 complete, with 9065 / 10000 correct
+Epoch 3 complete, with 9163 / 10000 correct
+Epoch 4 complete, with 9245 / 10000 correct
 ...
-Epoch 29 complete, with 9388 / 10000 correct
-Epoch 30 complete, with 9402 / 10000 correct
-final accuracy: 0.9402%
+Epoch 29 complete, with 9397 / 10000 correct
+Epoch 30 complete, with 9422 / 10000 correct
+final accuracy: 94.22%
+
 ```
 
 ## To-dos

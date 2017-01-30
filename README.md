@@ -15,7 +15,7 @@ $sbt run
 
 ## Typical Results
 
-I typically get recognition accuracy in the 94%-95% range. A typical run looks like this:
+I typically get recognition accuracy in the 94%-95% range. An average run looks like this:
 
 ```
 $sbt run

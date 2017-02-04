@@ -20,9 +20,8 @@ class NeuralNetwork(sizes: Seq[Int]) {
 	var biases = for (y <- sizes.drop(1)) yield DenseMatrix.rand(y, 1, normal)
 	var weights = for ((x, y) <- sizes.dropRight(1) zip sizes.drop(1)) yield DenseMatrix.rand(y, x, normal)
 
+	// Plug an activation into the network and return the output
 	def feedForward (activation: DenseMatrix[Double]) : DenseMatrix[Double] = {
-		/* Plug an activation into the network and return the output
-		*/
 		var output = activation
 
 		biases zip weights foreach { case (bias, weight) => 
@@ -32,9 +31,9 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		return output
 	}
 
-	def sgd (trainingData: Seq[Datum], epochs: Int, miniBatchSize: Int, eta: Double, testData: Seq[Datum]) {
+	def sgd (trainingData: Seq[Datum], epochs: Int, miniBatchSize: Int, eta: Double, testData: Option[Seq[Datum]]) {
 		/* Perform mini batch stochastic gradient descent to train the network, outputting the test accuracy at each epoch. The training
-		*  and test data are both Seq[Tuple2[]] of DenseMatrix[Doubles], where each tuple is an input / label pair, and the rest
+		*  and optional test data are both Seq[Tuple2[]] of DenseMatrix[Doubles], where each tuple is an input / label pair, and the rest
 		*  of the arguments do what they say on the tin.
 		*/
 		val n = trainingData.length
@@ -47,7 +46,10 @@ class NeuralNetwork(sizes: Seq[Int]) {
 				updateMiniBatch(miniBatch, eta)
 			}
 
-			println(s"Epoch ${i} complete, with ${evaluate(testData)} / ${testData.length} correct")
+			testData match {
+				case Some(data) => println(s"Epoch ${i} complete, with ${evaluate(data)} / ${data.length} correct")
+				case None => println(s"Epoch ${i} complete")
+			}
 		}
 	}
 

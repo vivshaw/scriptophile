@@ -15,10 +15,14 @@ class NeuralNetwork(sizes: Seq[Int]) {
 	*  be a 4-layer network with 4 input neurons, two hidden layers of 3 neurons each, and an output layer with 2 neurons.
 	*/
 	type Datum = Tuple2[DenseMatrix[Double], DenseMatrix[Double]]
+
 	val layers = sizes.length
 	val normal = breeze.stats.distributions.Gaussian(0, 1)
 	var biases = for (y <- sizes.drop(1)) yield DenseMatrix.rand(y, 1, normal)
 	var weights = for ((x, y) <- sizes.dropRight(1) zip sizes.drop(1)) yield DenseMatrix.rand(y, x, normal)
+
+	// Derivative of sigmoid function
+	def sigmoid_prime (z: DenseMatrix[Double]) = sigmoid(z) :* (-sigmoid(z) + 1.0)
 
 	// Plug an activation into the network and return the output
 	def feedForward (activation: DenseMatrix[Double]) : DenseMatrix[Double] = {
@@ -31,11 +35,11 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		return output
 	}
 
+	/* Perform mini batch stochastic gradient descent to train the network, outputting the test accuracy at each epoch. The training
+	*  and Optional test data are both Seq[Tuple2[]] of DenseMatrix[Doubles], where each tuple is an input / label pair, and the rest
+	*  of the arguments do what they say on the tin. If we provide testData, we get an evaluation on our test set printed for each epoch
+	*/
 	def sgd (trainingData: Seq[Datum], epochs: Int, miniBatchSize: Int, eta: Double, testData: Option[Seq[Datum]]) {
-		/* Perform mini batch stochastic gradient descent to train the network, outputting the test accuracy at each epoch. The training
-		*  and optional test data are both Seq[Tuple2[]] of DenseMatrix[Doubles], where each tuple is an input / label pair, and the rest
-		*  of the arguments do what they say on the tin.
-		*/
 		val n = trainingData.length
 
 		for (i <- 1 to epochs) {
@@ -53,11 +57,11 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		}
 	}
 
+	/* Updates weights and biases via backpropagation over one minibatch. miniBatch is a Seq[Tuple2[]]
+	*  of DenseMatrix[Double]s where each Tuple2 is an input / label pair, and eta
+	*  is the learning rate.
+	*/
 	def updateMiniBatch (miniBatch: Seq[Datum], eta: Double) {
-		/* Updates weights and biases via backpropagation over one minibatch. miniBatch is a Seq[Tuple2[]]
-		*  of DenseMatrix[Double]s where each Tuple2 is an input / label pair, and eta
-		*  is the learning rate.
-		*/
 		var nabla_bias = for (bias <- biases) yield DenseMatrix.zeros[Double](bias.rows, bias.cols)
 		var nabla_weight = for (weight <- weights) yield DenseMatrix.zeros[Double](weight.rows, weight.cols)
 
@@ -71,10 +75,10 @@ class NeuralNetwork(sizes: Seq[Int]) {
 		biases = for ((bias, nabla) <- biases zip nabla_bias) yield bias - (nabla * (eta / miniBatch.length))
 	}
 
+	/* Returns the gradient of the cost function as a Tuple2[] of DenseMatrix[Double]s, where nabla_bias
+	*  and nabla_weight are both Seq[DenseMatrix[Double]] just like weights and biases
+	*/
 	def backprop (features: DenseMatrix[Double], result: DenseMatrix[Double]) : (Seq[DenseMatrix[Double]], Seq[DenseMatrix[Double]]) = {
-		/* Returns the gradient of the cost function as a Tuple2[] of DenseMatrix[Double]s, where nabla_bias
-		*  and nabla_weight are both Seq[DenseMatrix[Double]] just like weights and biases
-		*/
 		var nabla_bias = for (bias <- biases) yield DenseMatrix.zeros[Double](bias.rows, bias.cols)
 		var nabla_weight = for (weight <- weights) yield DenseMatrix.zeros[Double](weight.rows, weight.cols)
 		
@@ -110,9 +114,6 @@ class NeuralNetwork(sizes: Seq[Int]) {
 	*  The output is calculated as the index of the output neuron with the maximum activation.
 	*/
 	def evaluate (test_data: Seq[Datum]) = (for ((input, label) <- test_data if argmax(feedForward(input)) == argmax(label)) yield 1).length
-
-	// Derivative of sigmoid function
-	def sigmoid_prime (z: DenseMatrix[Double]) = sigmoid(z) :* (-sigmoid(z) + 1.0)
 }
 
 object NeuralNetwork {
